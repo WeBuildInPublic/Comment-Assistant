@@ -13,8 +13,8 @@
   "main": "./extension.js",
   "contributes": {
     "commands": [{
-      "command": "comment-assistant.helloWorld",
-      "title": "Hello World"
+      "command": "comment-assistant.commentCode",
+      "title": "Comment Code"
     }]
   },
   "scripts": {
