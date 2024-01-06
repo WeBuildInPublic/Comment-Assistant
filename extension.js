@@ -20,36 +20,71 @@ function activate(context) {
 	let disposable = vscode.commands.registerCommand('comment-assistant.commentCode', function () {
 		// The code you place here will be executed every time your command is executed
 
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Comments complete!');
+			// check if we have an active workspace
+			if (vscode.workspace.workspaceFolders) {
+				// Get all open text documents in the workspace
+				const openDocuments = vscode.workspace.textDocuments;
+							
+				if (openDocuments.length > 0) {
+					// Extract file paths from the open documents
+					const filePaths = openDocuments.map((document) => document.uri.fsPath);
+			
+					// Show a quick pick dropdown with file paths
+					vscode.window.showQuickPick(filePaths, {
+						placeHolder: 'Select a file to open'
+					}).then((selectedPath) => {
+						if (selectedPath) {
+							// Open the text document
+							vscode.workspace.openTextDocument(selectedPath).then((document) => {
+								// Get the text content
+								const textContent = document.getText();
+								
+								// Do something with the text content
+								enterText()
+								console.log('Text content:', textContent);
+							}).catch((error) => {
+								console.error('Error opening the document:', error);
+							});
+						}
+					});
+				} else {
+					vscode.window.showInformationMessage('No open documents in the workspace.');
+				}
+
+			} else {
+				// No active workspace
+				vscode.window.showErrorMessage('No workspace opened.');
+			}
+
 	});
-
-	// vscode.workspace.openTextDocument(uri).then((document) => {
-	// 	let text = document.getText();
-	//   });
-
-	if(vscode.workspace.workspaceFolders !== undefined) {
-		let wf = vscode.workspace.workspaceFolders[0].uri.path ;
-		let f = vscode.workspace.workspaceFolders[0].uri.fsPath ; 
-	
-		message = `YOUR-EXTENSION: folder: ${wf} - ${f}` ;
-	
-		vscode.window.showInformationMessage(message);
-		// addComment(wf);
-	} 
-	else {
-		message = "YOUR-EXTENSION: Working folder not found, open a folder an try again" ;
-	
-		vscode.window.showErrorMessage(message);
-	}
-
 
 
 	context.subscriptions.push(disposable);
 }
 
-function addComment(wf) {
+// function addComment(f) {
+// 	// var path = require('path');
 
+// 	// var content = rec[rt.fields[field]];
+// 	// var filePath = path.join(wf, selected.label + '.' + field);
+// 	// fs.writeFileSync(filePath, content, 'utf8');
+
+// 	var openPath = vscode.Uri.file(f + "/coin_toss0.py"); //A request file path
+// 	vscode.workspace.openTextDocument(openPath).then(doc => {
+// 	vscode.window.showTextDocument(doc);
+// 	});
+// }
+
+function enterText() {
+	let text = "hello";
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+		vscode.commands.executeCommand('editor.action.selectAll');
+		vscode.commands.executeCommand('editor.action.clipboardCutAction');
+		editor.edit(editBuilder => {
+            editBuilder.insert(new vscode.Position(0, 0), text);
+        });
+    }
 }
 
 // This method is called when your extension is deactivated
