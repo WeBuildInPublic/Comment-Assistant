@@ -9,14 +9,9 @@ const vscode = require('vscode');
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "comment-assistant" is now active!');
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with  registerCommand
-	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('comment-assistant.commentCode', function () {
 		// The code you place here will be executed every time your command is executed
 
@@ -34,12 +29,10 @@ function activate(context) {
 						placeHolder: 'Select a file to open'
 					}).then((selectedPath) => {
 						if (selectedPath) {
-							// Open the text document
 							vscode.workspace.openTextDocument(selectedPath).then((document) => {
-								// Get the text content
 								const textContent = document.getText();
 								
-								// Do something with the text content
+								// TODO: replace the log statement with the functionality that sends the text data to the OpenAI API so that comments are generated
 								console.log('Text content:', textContent);
 							}).catch((error) => {
 								console.error('Error opening the document:', error);
