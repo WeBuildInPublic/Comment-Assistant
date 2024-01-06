@@ -33,6 +33,7 @@ function activate(context) {
 								const textContent = document.getText();
 								
 								// TODO: replace the log statement with the functionality that sends the text data to the OpenAI API so that comments are generated
+								enterText();
 								console.log('Text content:', textContent);
 							}).catch((error) => {
 								console.error('Error opening the document:', error);
@@ -50,7 +51,33 @@ function activate(context) {
 
 	});
 
+
 	context.subscriptions.push(disposable);
+}
+
+// function addComment(f) {
+// 	// var path = require('path');
+
+// 	// var content = rec[rt.fields[field]];
+// 	// var filePath = path.join(wf, selected.label + '.' + field);
+// 	// fs.writeFileSync(filePath, content, 'utf8');
+
+// 	var openPath = vscode.Uri.file(f + "/coin_toss0.py"); //A request file path
+// 	vscode.workspace.openTextDocument(openPath).then(doc => {
+// 	vscode.window.showTextDocument(doc);
+// 	});
+// }
+
+function enterText() {
+	let text = "hello";
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+		vscode.commands.executeCommand('editor.action.selectAll');
+		vscode.commands.executeCommand('editor.action.clipboardCutAction');
+		editor.edit(editBuilder => {
+            editBuilder.insert(new vscode.Position(0, 0), text);
+        });
+    }
 }
 
 // This method is called when your extension is deactivated- just to clean everything up at the end
