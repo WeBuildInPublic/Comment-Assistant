@@ -24,7 +24,32 @@ function activate(context) {
 		vscode.window.showInformationMessage('Comments complete!');
 	});
 
+	// vscode.workspace.openTextDocument(uri).then((document) => {
+	// 	let text = document.getText();
+	//   });
+
+	if(vscode.workspace.workspaceFolders !== undefined) {
+		let wf = vscode.workspace.workspaceFolders[0].uri.path ;
+		let f = vscode.workspace.workspaceFolders[0].uri.fsPath ; 
+	
+		message = `YOUR-EXTENSION: folder: ${wf} - ${f}` ;
+	
+		vscode.window.showInformationMessage(message);
+		// addComment(wf);
+	} 
+	else {
+		message = "YOUR-EXTENSION: Working folder not found, open a folder an try again" ;
+	
+		vscode.window.showErrorMessage(message);
+	}
+
+
+
 	context.subscriptions.push(disposable);
+}
+
+function addComment(wf) {
+
 }
 
 // This method is called when your extension is deactivated
