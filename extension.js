@@ -9,8 +9,7 @@ const vscode = require('vscode');
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "comment-assistant" is now active!');
+	console.log('Comment Assistant has been activated!');
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with  registerCommand
@@ -77,12 +76,11 @@ function getComments(inputCode) {
 
 	// invoke python script
 	const terminal = vscode.window.createTerminal('Python Terminal');
-	terminal.sendText(`python3 ${__dirname}\\main.py \"${inputCode.replaceAll("\n", "\\n")}\" > ${filePath}`);
+	terminal.sendText(`python3 ${__dirname}\\main.py \"${__dirname}\" \"${inputCode.replaceAll("\n", "\\n")}\" > ${filePath}`);
 
 	// process text made by the python file
 	const watcher = fs.watch(filePath, (eventType, filename) => {
 		if (eventType === 'change') {
-			console.log(`${filename} has been modified.`);
 			fs.readFile(filePath, 'utf8', (err, data) => {
 				if (err) {
 					console.error('Error reading file:', err);
@@ -94,7 +92,6 @@ function getComments(inputCode) {
 					for (let i = 2; i < rawText.length; i += 2) {
 						cleanedText += rawText.charAt(i);
 					}
-					console.log(cleanedText);
 					enterText(cleanedText);
 					vscode.window.showInformationMessage('Comments complete!');
 				}

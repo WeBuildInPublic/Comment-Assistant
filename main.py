@@ -3,7 +3,8 @@ import openai
 import sys
 
 
-API_KEY = ""
+with open(sys.argv[1] + "\\api_key.txt") as f:
+    API_KEY = f.read().strip()
 PROMPT = """Throughly yet concisely comment and document the following code, following all conventions of the programming language. Include standard documentation headers and inline comments where appriopriate. Reply only with the new code and comments, and do not change the actual code at all.
 
 {}
@@ -13,7 +14,7 @@ Response:
 """
 
 
-inputCode = sys.argv[1]
+inputCode = sys.argv[2]
 outputCode = ""
 try:
     openai.api_key = API_KEY
