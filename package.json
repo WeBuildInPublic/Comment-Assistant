@@ -2,6 +2,7 @@
   "name": "comment-assistant",
   "displayName": "Comment Assistant",
   "description": "",
+  "icon":"publisher-icon-128.jpg",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.85.0"
