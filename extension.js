@@ -74,9 +74,14 @@ function getComments(inputCode) {
 		console.log('Text file created successfully.');
 	});
 
+	inputCode = inputCode.replaceAll("\n", "\\n");
+	inputCode = inputCode.replaceAll("\"", "\\\"");
+	inputCode = inputCode.replaceAll("\'", "\\\'");
+	inputCode = inputCode.replaceAll("\\", "\\\\");
+
 	// invoke python script
 	const terminal = vscode.window.createTerminal('Python Terminal');
-	terminal.sendText(`python3 ${__dirname}\\main.py \"${__dirname}\" \"${inputCode.replaceAll("\n", "\\n")}\" > ${filePath}`);
+	terminal.sendText(`python3 ${__dirname}\\main.py \"${__dirname}\" \"${inputCode}\" > ${filePath}`);
 
 	// process text made by the python file
 	const watcher = fs.watch(filePath, (eventType, filename) => {
