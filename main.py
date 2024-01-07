@@ -3,8 +3,12 @@ import openai
 import sys
 
 
-API_KEY = ""
+API_KEY = "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"
 PROMPT = """Throughly yet concisely comment and document the following code, following all conventions of the programming language. Include standard documentation headers and inline comments where appriopriate. Reply only with the new code and comments, and do not change the actual code at all.
+
+{}
+
+Response: 
 
 """
 
@@ -15,7 +19,7 @@ try:
     openai.api_key = API_KEY
     response = openai.Completion.create(
         model="text-davinci-003",
-        prompt=PROMPT+inputCode,
+        prompt=PROMPT.replace("{}", inputCode),
         max_tokens=512,
         n=1,
         temperature=0.5,

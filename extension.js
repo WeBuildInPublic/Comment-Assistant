@@ -89,7 +89,13 @@ function getComments(inputCode) {
 					return;
 				}
 				if (data.length !== 0) {
-					enterText(data.toString());
+					const rawText = data.toString();
+					let cleanedText = '';
+					for (let i = 2; i < rawText.length; i += 2) {
+						cleanedText += rawText.charAt(i);
+					}
+					console.log(cleanedText);
+					enterText(cleanedText);
 					vscode.window.showInformationMessage('Comments complete!');
 				}
 			});
