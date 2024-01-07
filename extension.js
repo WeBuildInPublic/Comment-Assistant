@@ -9,58 +9,96 @@ const vscode = require('vscode');
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "comment-assistant" is now active!');
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with  registerCommand
 	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('comment-assistant.commentCode', function () {	
-		const fs = require('fs');
-		const filePath = __dirname + '\\results.txt';
+	let disposable = vscode.commands.registerCommand('comment-assistant.commentCode', function () {
+
+		// check if we have an active workspace
+		if (vscode.workspace.workspaceFolders) {
+			// Get all open text documents in the workspace
+			const openDocuments = vscode.workspace.textDocuments;
+						
+			if (openDocuments.length > 0) {
+				// Extract file paths from the open documents
+				const filePaths = openDocuments.map((document) => document.uri.fsPath);
 		
-		inputCode = "def bubble_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        swapped = False\n        for j in range(0, n - i - 1):\n            if arr[j] > arr[j + 1]:\n                arr[j], arr[j + 1] = arr[j + 1], arr[j]\n                swapped = True\n        if not swapped:\n            break\n    return arr";
-
-		// create file for python script to write output to
-		fs.writeFile(filePath, "", (err) => {
-			if (err) {
-				console.error('Error writing to file:', err);
-				return;
-			}
-			console.log('Text file created successfully.');
-		});
-
-		// invoke python script
-		const terminal = vscode.window.createTerminal('Python Terminal');
-		terminal.sendText(`python3 ${__dirname}\\main.py \"${inputCode.replaceAll("\n", "\\n")}\" > ${filePath}`);
-
-		// process text made by the python file
-		const watcher = fs.watch(filePath, (eventType, filename) => {
-			if (eventType === 'change') {
-			    console.log(`${filename} has been modified.`);
-			    fs.readFile(filePath, 'utf8', (err, data) => {
-					if (err) {
-						console.error('Error reading file:', err);
-						return;
-					}
-					if (data.length !== 0) {
-						console.log('File content:', data);
-						vscode.window.showInformationMessage('Comments complete!');
+				// Show a quick pick dropdown with file paths
+				vscode.window.showQuickPick(filePaths, {
+					placeHolder: 'Select a file to open'
+				}).then((selectedPath) => {
+					if (selectedPath) {
+						vscode.workspace.openTextDocument(selectedPath).then((document) => {
+							const textContent = document.getText();
+							getComments(textContent);
+						}).catch((error) => {
+							console.error('Error opening the document:', error);
+						});
 					}
 				});
+			} else {
+				vscode.window.showInformationMessage('No open documents in the workspace.');
 			}
-		});
-	});
 
+		} else {
+			// No active workspace
+			vscode.window.showErrorMessage('No workspace opened.');
+		}
+	});
 	context.subscriptions.push(disposable);
 }
 
+function enterText(text) {
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+		vscode.commands.executeCommand('editor.action.selectAll');
+		vscode.commands.executeCommand('editor.action.clipboardCutAction');
+		editor.edit(editBuilder => {
+            editBuilder.insert(new vscode.Position(0, 0), text);
+        });
+    }
+}
 
-// This method is called when your extension is deactivated
+function getComments(inputCode) {
+	const fs = require('fs');
+	const filePath = __dirname + '\\results.txt';
+	
+	// create file for python script to write output to
+	fs.writeFile(filePath, "", (err) => {
+		if (err) {
+			console.error('Error writing to file:', err);
+			return;
+		}
+		console.log('Text file created successfully.');
+	});
+
+	// invoke python script
+	const terminal = vscode.window.createTerminal('Python Terminal');
+	terminal.sendText(`python3 ${__dirname}\\main.py \"${inputCode.replaceAll("\n", "\\n")}\" > ${filePath}`);
+
+	// process text made by the python file
+	const watcher = fs.watch(filePath, (eventType, filename) => {
+		if (eventType === 'change') {
+			console.log(`${filename} has been modified.`);
+			fs.readFile(filePath, 'utf8', (err, data) => {
+				if (err) {
+					console.error('Error reading file:', err);
+					return;
+				}
+				if (data.length !== 0) {
+					enterText(data.toString());
+					vscode.window.showInformationMessage('Comments complete!');
+				}
+			});
+		}
+	});
+}
+
+// This method is called when your extension is deactivated- just to clean everything up at the end
 function deactivate() {}
-
 
 module.exports = {
 	activate,
