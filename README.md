@@ -13,3 +13,5 @@ To document a code file, simply open the command pallette using `Ctrl+Shift+P`, 
 Currently, the extension documents whole files at a time and supports any programming language. More features may be added in the future.
 
 **Enjoy!**
+
+![image](https://github.com/WeBuildInPublic/Comment-Assistant/assets/90410161/42e8b307-1e86-4f6b-8581-e30b32b5a844)
