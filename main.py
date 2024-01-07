@@ -21,7 +21,7 @@ try:
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=PROMPT.replace("{}", inputCode),
-        max_tokens=512,
+        max_tokens=1024,
         n=1,
         temperature=0.5,
     )
