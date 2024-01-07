@@ -3,7 +3,7 @@ import openai
 import sys
 
 
-API_KEY = "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"
+API_KEY = ""
 PROMPT = """Throughly yet concisely comment and document the following code, following all conventions of the programming language. Include standard documentation headers and inline comments where appriopriate. Reply only with the new code and comments, and do not change the actual code at all.
 
 {}
