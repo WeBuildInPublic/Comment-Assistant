@@ -3,3 +3,4 @@ node_modules
 *.vsix
 api_key.txt
 results.txt
+result.txt
